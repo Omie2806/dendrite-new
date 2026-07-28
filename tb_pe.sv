@@ -144,6 +144,8 @@ pe dut4 (
 );
 
 initial begin
+    //apply reset after every test
+    //will have to clear operand_src and make operand 0 after the required number of operations have been done
     @(posedge clk);
     reset = 1;
 
@@ -159,6 +161,7 @@ initial begin
     repeat(2)@(posedge clk);
     reset = 0;
 
+//test 1 - check result1 forward to the next pe 
     @(posedge clk);
     operand_srcA1 = 4'b0000; operand_srcB1 = 4'b0000;
     operand_srcA2 = 4'b0001; operand_srcB2 = 4'b0001;
@@ -171,6 +174,65 @@ initial begin
     A_TB4 = 64'd0;  B_TB4 = 64'd0;
     repeat(3)@(posedge clk);
 
+    reset = 1;
+
+    operand_srcA1 = 4'b0000; operand_srcB1 = 4'b0000;
+    operand_srcA2 = 4'b0000; operand_srcB2 = 4'b0000;
+    operand_srcA3 = 4'b0000; operand_srcB3 = 4'b0000;
+    operand_srcA4 = 4'b0000; operand_srcB4 = 4'b0000;
+
+    A_TB1 = 64'd0;  B_TB1 = 64'd0;
+    A_TB2 = 64'd0;  B_TB2 = 64'd0;
+    A_TB3 = 64'd0;  B_TB3 = 64'd0;
+    A_TB4 = 64'd0;  B_TB4 = 64'd0;
+    repeat(2)@(posedge clk);
+    reset = 0;
+
+//test 2 - forward result1 to all PEs 
+    @(posedge clk);
+    operand_srcA1 = 4'b0000; operand_srcB1 = 4'b0000;
+    operand_srcA2 = 4'b0001; operand_srcB2 = 4'b0001;
+    operand_srcA3 = 4'b0001; operand_srcB3 = 4'b0001;
+    operand_srcA4 = 4'b0001; operand_srcB4 = 4'b0001;
+
+    A_TB1 = 64'd2;  B_TB1 = 64'd3;
+    A_TB2 = 64'd0;  B_TB2 = 64'd0;
+    A_TB3 = 64'd0;  B_TB3 = 64'd0;
+    A_TB4 = 64'd0;  B_TB4 = 64'd0;
+    repeat(3)@(posedge clk);
+
+    reset = 1;
+
+    operand_srcA1 = 4'b0000; operand_srcB1 = 4'b0000;
+    operand_srcA2 = 4'b0000; operand_srcB2 = 4'b0000;
+    operand_srcA3 = 4'b0000; operand_srcB3 = 4'b0000;
+    operand_srcA4 = 4'b0000; operand_srcB4 = 4'b0000;
+
+    A_TB1 = 64'd0;  B_TB1 = 64'd0;
+    A_TB2 = 64'd0;  B_TB2 = 64'd0;
+    A_TB3 = 64'd0;  B_TB3 = 64'd0;
+    A_TB4 = 64'd0;  B_TB4 = 64'd0;
+    repeat(2)@(posedge clk);
+    reset = 0;
+
+//test 3 - chain the forwarding, result1 then result2 and so on
+//will have to clear operand_src and make operand 0 after the required number of operations have been done
+    @(posedge clk);
+    operand_srcA1 = 4'b0000; operand_srcB1 = 4'b0000;
+    operand_srcA2 = 4'b0001; operand_srcB2 = 4'b0001;
+    operand_srcA3 = 4'b0010; operand_srcB3 = 4'b0010;
+    operand_srcA4 = 4'b0011; operand_srcB4 = 4'b0011;
+
+    A_TB1 = 64'd2;  B_TB1 = 64'd3;
+    A_TB2 = 64'd0;  B_TB2 = 64'd0;
+    A_TB3 = 64'd0;  B_TB3 = 64'd0;
+    A_TB4 = 64'd0;  B_TB4 = 64'd0;
+    @(posedge clk);
+    A_TB1 = 64'd0;  B_TB1 = 64'd0;
+    A_TB2 = 64'd0;  B_TB2 = 64'd0;
+    A_TB3 = 64'd0;  B_TB3 = 64'd0;
+    A_TB4 = 64'd0;  B_TB4 = 64'd0;
+    repeat(6)@(posedge clk);
     $finish;
 
 end
